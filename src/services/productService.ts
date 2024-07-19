@@ -1,29 +1,22 @@
-import productModel, { IProduct } from "../models/productModel";
+import Product, { IProduct } from '../models/productModel';
 
 export const getProducts = async (): Promise<IProduct[]> => {
-    return productModel.find();
-}
+    return await Product.find().populate('category');
+};
 
+export const getProductById = async (id: string): Promise<IProduct | null> => {
+    return await Product.findById(id).populate('category');
+};
 
-export const getProductsByCategoryId = async (categoryId: String): Promise<IProduct[]> => {
-    return productModel.find({ category: categoryId });
-}
+export const createProduct = async (data: IProduct): Promise<IProduct> => {
+    const product = new Product(data);
+    return await product.save();
+};
 
-export const getProductById = async (productId: String): Promise<IProduct | null> => {
-    return productModel.findById(productId);
-}
+export const updateProduct = async (id: string, data: Partial<IProduct>): Promise<IProduct | null> => {
+    return await Product.findByIdAndUpdate(id, data, { new: true }).populate('category');
+};
 
-export const createProduct = async (product: IProduct): Promise<IProduct> => {
-    return productModel.create(product);
-}
-
-export const updateProduct = async (productID: String, newProduct: IProduct): Promise<IProduct | null> => {
-    return productModel.findByIdAndUpdate(productID, newProduct, {})
-}
-
-
-export const deleteProduct = async (productID: String): Promise<IProduct | null> => {
-    return productModel.findOneAndDelete(productID)
-}
-
-
+export const deleteProduct = async (id: string): Promise<IProduct | null> => {
+    return await Product.findByIdAndDelete(id);
+};
